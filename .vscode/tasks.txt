@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build-game",
+            "type": "shell",
+            "command": "D:/softwares/msys2/mingw64/bin/g++.exe",
+            "args": [
+                "-std=c++17",
+                "main.cpp",
+                "-ID:/softwares/msys2/mingw64/include",
+                "-LD:/softwares/msys2/mingw64/lib",
+                "-lsfml-graphics",
+                "-lsfml-window",
+                "-lsfml-system",
+                "-lsfml-audio",
+                "-o",
+                "game.exe"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+}
