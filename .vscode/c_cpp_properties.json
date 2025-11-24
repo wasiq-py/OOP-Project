@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "D:/softwares/SFML/include"
+                "D:/softwares/SFML/include","C:\\mingw_dev_lib\\include"
             ],
             "defines": [],
             "compilerPath": "D:/softwares/msys2/mingw64/bin/g++.exe",
