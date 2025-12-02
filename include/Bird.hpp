@@ -2,58 +2,92 @@
 #define BIRD_HPP
 
 #include <SFML/Graphics.hpp>
-#include <memory>
 using namespace std;
 
 // =====================
 // Bird class
 // =====================
-class Bird {
-public:
-    Bird(sf::Texture& texture, sf::Vector2f deckPos);
-
-    virtual void draw(sf::RenderWindow& window);
-
-    virtual void lift();
-
-    virtual void reset();
-
-    virtual void launch();
-
-    sf::Sprite& getSprite();
-    bool isLaunched() const;
-    void setDeckPosition(sf::Vector2f pos);
-
+class Bird
+{
 protected:
     sf::Sprite sprite;
     sf::Vector2f deckPosition;
     bool lifted;
     bool launched;
+
+public:
+    Bird(sf::Texture & texture, sf::Vector2f deckPos);
+
+    virtual void draw(sf::RenderWindow & window);
+
+    sf::Sprite & getSprite();
+    const sf::Sprite & getSprite() const;
+
+    void setDeckPosition(const sf::Vector2f & pos);
+    void lift();
+    bool isLaunched() const;
+    void launch();
+
+    // update motion given dt and velocity (center bird)
+    virtual void update(float dt, sf::Vector2f & velocity);
+
+    // special ability while airborne (mouse click)
+    virtual void specialAbility(sf::Vector2f & velocity);
 };
 
-// Derived birds
-class RedBird : public Bird {
+// =====================
+// RedBird class
+// =====================
+class RedBird : public Bird
+{
 public:
-    RedBird(sf::Texture& tex, sf::Vector2f pos);
+    RedBird(sf::Texture & tex, sf::Vector2f pos);
 };
 
-class BlueBird : public Bird {
+// =====================
+// BlueBird class
+//  - splits into three, with spread trajectories
+// =====================
+class BlueBird : public Bird
+{
+private:
+    bool splitUsed;
+    float splitTime;
+    sf::Vector2f leftDir;
+    sf::Vector2f rightDir;
+    float leftSpeed;
+    float rightSpeed;
+
 public:
-    BlueBird(sf::Texture& tex, sf::Vector2f pos);
+    BlueBird(sf::Texture & tex, sf::Vector2f pos);
+
+    virtual void draw(sf::RenderWindow & window);
+    virtual void update(float dt, sf::Vector2f & velocity);
+    virtual void specialAbility(sf::Vector2f & velocity);
 };
 
-class YellowBird : public Bird {
+// =====================
+// YellowBird class
+//  - one-time speed boost
+// =====================
+class YellowBird : public Bird
+{
+private:
+    bool boostUsed;
+
 public:
-    YellowBird(sf::Texture& tex, sf::Vector2f pos);
+    YellowBird(sf::Texture & tex, sf::Vector2f pos);
+
+    virtual void specialAbility(sf::Vector2f & velocity);
 };
 
 // =========================
 // function to create birds
 // =========================
-unique_ptr<Bird> createBird(int type,
-    sf::Texture& redTex,
-    sf::Texture& blueTex,
-    sf::Texture& yellowTex,
-    float x, float y, float scale);
+Bird * createBird(int type,
+                  sf::Texture & redTex,
+                  sf::Texture & blueTex,
+                  sf::Texture & yellowTex,
+                  float x, float y, float scale);
 
 #endif
