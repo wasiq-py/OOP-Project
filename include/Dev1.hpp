@@ -17,133 +17,108 @@ protected:
     sf::Sprite sprite;
     int maxHP;
     int currentHP;
-    string type;     // "weak" or "strong"
     bool alive;
+    string type;
 
 public:
     Pig(const sf::Texture& texture, sf::Vector2f position, int hp, string t);
 
-    virtual ~Pig();
-
     virtual void update(float dt);
 
-    virtual void draw(sf::RenderWindow& window);
-
-    virtual void takeDamage(int amount);
+    sf::Sprite& getSprite();
+    const sf::Sprite& getSprite() const;
 
     bool isAlive() const;
-    int getHP() const;
-    int getMaxHP() const;
 
-    sf::Sprite& getSprite();
-    sf::FloatRect getBounds() const;
+    void takeDamage(int amount);
+
+    int getHP() const;
+    string getType() const;
 };
 
-
-// ======================================================
-//          WEAK + STRONG PIGS (DERIVED)
-// ======================================================
-
+// weak pig = low HP (1 good hit)
 class WeakPig : public Pig
 {
 public:
-    WeakPig(const sf::Texture& texture, sf::Vector2f pos);
+    WeakPig(const sf::Texture& texture, sf::Vector2f position);
 };
 
+// strong pig = higher HP (2–3 good hits)
 class StrongPig : public Pig
 {
 public:
-    StrongPig(const sf::Texture& texture, sf::Vector2f pos);
+    StrongPig(const sf::Texture& texture, sf::Vector2f position);
 };
 
+// king pig = high HP (5–6 good hits), used in last level
+class KingPig : public Pig
+{
+public:
+    KingPig(const sf::Texture& texture, sf::Vector2f position);
+};
 
 // ======================================================
-//                OBSTACLE BASE CLASS
+//                 OBSTACLE BASE CLASS
 // ======================================================
-//
-// Each obstacle:
-//  - breaks (destroyed) in ONE hit
-//  - slows down bird velocity depending on type
-//
-// Ice:   small slow
-// Wood:  medium slow
-// Stone: strong slow
-//
 
 class Obstacle
 {
 protected:
     sf::Sprite sprite;
     bool destroyed;
-    string type;   // "ice", "wood", "stone"
+    string material;   // "ice", "wood", "metal"
 
 public:
-    Obstacle(const sf::Texture& texture, sf::Vector2f pos, string t);
-
-    virtual ~Obstacle();
+    Obstacle(const sf::Texture& texture, sf::Vector2f position, string m);
 
     virtual void update(float dt);
 
-    virtual void draw(sf::RenderWindow& window);
+    sf::Sprite& getSprite();
+    const sf::Sprite& getSprite() const;
 
     bool isDestroyed() const;
-    sf::Sprite& getSprite();
-    sf::FloatRect getBounds() const;
-    string getType() const;
+    string getMaterial() const;
 
-    // Called when bird hits this obstacle.
-    // velocity is passed BY REFERENCE so it can be modified.
-    virtual void onHit(sf::Vector2f& velocity) = 0;
+    virtual void onHit(sf::Vector2f& birdVelocity) = 0;
 };
 
-
-// ======================================================
-//              OBSTACLE TYPES
-// ======================================================
-
+// ice obstacle: weakest
 class IceObstacle : public Obstacle
 {
 public:
-    IceObstacle(const sf::Texture& tex, sf::Vector2f pos);
+    IceObstacle(const sf::Texture& texture, sf::Vector2f position);
 
-    virtual void onHit(sf::Vector2f& velocity);
+    virtual void onHit(sf::Vector2f& birdVelocity);
 };
 
+// wood obstacle: medium
 class WoodObstacle : public Obstacle
 {
 public:
-    WoodObstacle(const sf::Texture& tex, sf::Vector2f pos);
+    WoodObstacle(const sf::Texture& texture, sf::Vector2f position);
 
-    virtual void onHit(sf::Vector2f& velocity);
+    virtual void onHit(sf::Vector2f& birdVelocity);
 };
 
+// stone obstacle (metal): strongest
 class StoneObstacle : public Obstacle
 {
 public:
-    StoneObstacle(const sf::Texture& tex, sf::Vector2f pos);
+    StoneObstacle(const sf::Texture& texture, sf::Vector2f position);
 
-    virtual void onHit(sf::Vector2f& velocity);
+    virtual void onHit(sf::Vector2f& birdVelocity);
 };
 
-
 // ======================================================
-//                COLLISION HELPERS
+//                 COLLISION HELPERS
 // ======================================================
 
-bool checkCollision(const sf::Sprite& a, const sf::Sprite& b);
-
-// Bird ↔ obstacle
-// Each hit:
-//  - modifies bird velocity (slow)
-//  - destroys the obstacle in ONE hit
 bool handleBirdObstacleCollision(const sf::Sprite& bird,
                                  sf::Vector2f& birdVelocity,
                                  Obstacle& obs);
 
-// Damage function based on bird velocity
 int computeDamageFromVelocity(const sf::Vector2f& velocity);
 
-// Bird ↔ pig
 bool handleBirdPigCollision(const sf::Sprite& bird,
                             const sf::Vector2f& birdVelocity,
                             Pig& pig);

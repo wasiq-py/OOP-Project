@@ -5,7 +5,7 @@
 using namespace std;
 
 // =====================
-// Bird class
+// Bird base class
 // =====================
 class Bird
 {
@@ -28,7 +28,7 @@ public:
     bool isLaunched() const;
     void launch();
 
-    // update motion given dt and velocity (center bird)
+    // update motion given dt and velocity
     virtual void update(float dt, sf::Vector2f & velocity);
 
     // special ability while airborne (mouse click)

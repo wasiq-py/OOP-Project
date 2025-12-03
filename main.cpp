@@ -11,9 +11,9 @@
 
 using namespace std;
 
-// Folder paths
-static const string TEXTURES = "assets/textures/";
-static const string AUDIO    = "assets/audio/";
+// folder paths
+const string TEXTURES = "assets/textures/";
+const string AUDIO    = "assets/audio/";
 
 // Simple AABB collision helper
 bool checkSpriteCollision(const sf::Sprite & a, const sf::Sprite & b)
@@ -38,11 +38,11 @@ bool loadTexture(sf::Texture & t, const string & file)
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT),
-                            "Scrolling Background with Ship");
+                            "Angry Chiriya");
     window.setFramerateLimit(60);
 
     // =====================================================
-    // LOAD TEXTURES
+    // load textures
     // =====================================================
     sf::Texture bgTexture;
     sf::Texture shipTexture;
@@ -52,10 +52,13 @@ int main()
     sf::Texture yellowBirdTexture;
     sf::Texture weakPigTexture;
     sf::Texture strongPigTexture;
+    sf::Texture kingPigTexture;
     sf::Texture iceTexture;
     sf::Texture woodTexture;
     sf::Texture stoneTexture;
     sf::Texture crateTexture;
+    sf::Texture slingBackTexture;
+    sf::Texture slingFrontTexture;
 
     if (loadTexture(bgTexture, "bg.png") == false) return 1;
     if (loadTexture(shipTexture, "ship.png") == false) return 1;
@@ -65,17 +68,21 @@ int main()
     if (loadTexture(blueBirdTexture, "bird_blue.png") == false) return 1;
     if (loadTexture(yellowBirdTexture, "bird_yellow.png") == false) return 1;
 
-    if (loadTexture(weakPigTexture, "Pig.png") == false) return 1;
-    if (loadTexture(strongPigTexture, "Pig.png") == false) return 1;
+    if (loadTexture(weakPigTexture, "pig1.png") == false) return 1;
+    if (loadTexture(strongPigTexture, "pig2.png") == false) return 1;
+    if (loadTexture(kingPigTexture, "pig3.png") == false) return 1;
 
-    if (loadTexture(iceTexture, "wood-block.png") == false) return 1;
-    if (loadTexture(woodTexture, "wood-block.png") == false) return 1;
-    if (loadTexture(stoneTexture, "wood-block.png") == false) return 1;
+    if (loadTexture(iceTexture, "block_ice.png") == false) return 1;
+    if (loadTexture(woodTexture, "block_wood.png") == false) return 1;
+    if (loadTexture(stoneTexture, "block_stone.png") == false) return 1;
 
     if (loadTexture(crateTexture, "CrateBird.png") == false) return 1;
 
+    if (loadTexture(slingBackTexture, "slingBackTexture.png") == false) return 1;
+    if (loadTexture(slingFrontTexture, "slingFrontTexture.png") == false) return 1;
+
     // =====================================================
-    // HUD FONT + TEXT
+    // hud + txt
     // =====================================================
     sf::Font hudFont;
     if (hudFont.loadFromFile("assets/fonts/arial.ttf") == false)
@@ -99,7 +106,6 @@ int main()
 
     if (hudFont.getInfo().family != "")
     {
-        // HUD number text
         hudTextRed.setFont(hudFont);
         hudTextBlue.setFont(hudFont);
         hudTextYellow.setFont(hudFont);
@@ -112,26 +118,23 @@ int main()
         hudTextBlue.setFillColor(sf::Color::White);
         hudTextYellow.setFillColor(sf::Color::White);
 
-        // HUD bird icons
         hudRedSprite.setTexture(redBirdTexture);
         hudBlueSprite.setTexture(blueBirdTexture);
         hudYellowSprite.setTexture(yellowBirdTexture);
 
-        float hudScale = 0.25f;
-        hudRedSprite.setScale(hudScale, hudScale);
-        hudBlueSprite.setScale(hudScale, hudScale);
-        hudYellowSprite.setScale(hudScale, hudScale);
+        float S = 0.25f;
+        hudRedSprite.setScale(S, S);
+        hudBlueSprite.setScale(S, S);
+        hudYellowSprite.setScale(S, S);
 
         hudRedSprite.setPosition(40.0f, 10.0f);
         hudBlueSprite.setPosition(260.0f, 10.0f);
         hudYellowSprite.setPosition(520.0f, 10.0f);
 
-        // place text a bit to the right of each icon
         hudTextRed.setPosition(100.0f, 10.0f);
         hudTextBlue.setPosition(320.0f, 10.0f);
         hudTextYellow.setPosition(580.0f, 10.0f);
 
-        // Game Over text setup
         gameOverText.setFont(hudFont);
         gameOverText.setString("GAME OVER");
         gameOverText.setCharacterSize(64);
@@ -143,7 +146,6 @@ int main()
         gameOverText.setPosition(WINDOW_WIDTH / 2.0f,
                                  WINDOW_HEIGHT / 2.0f - 40.0f);
 
-        // Score text (currently fixed at 0)
         scoreText.setFont(hudFont);
         scoreText.setString("Score: 0");
         scoreText.setCharacterSize(36);
@@ -155,7 +157,6 @@ int main()
         scoreText.setPosition(WINDOW_WIDTH / 2.0f,
                               WINDOW_HEIGHT / 2.0f + 20.0f);
 
-        // Reset button
         resetButton.setSize(sf::Vector2f(120.0f, 40.0f));
         resetButton.setFillColor(sf::Color(80, 80, 80));
         resetButton.setOutlineColor(sf::Color::White);
@@ -170,7 +171,7 @@ int main()
     }
 
     // =====================================================
-    // BACKGROUND MUSIC
+    // bg music
     // =====================================================
     sf::Music music;
     if (music.openFromFile(AUDIO + "Angry Birds Theme Song.mp3") == false)
@@ -184,7 +185,7 @@ int main()
     }
 
     // =====================================================
-    // BACKGROUND SETUP
+    // bg setup
     // =====================================================
     sf::Sprite bgSprite;
     bgSprite.setTexture(bgTexture);
@@ -200,9 +201,9 @@ int main()
     }
     float bgOffsetX = 0.0f;
 
-    // =====================================================
-    // SHIP SETUP
-    // =====================================================
+    // ------------------------------------------------------------------------------------------
+    // ship setup
+
     sf::Sprite shipSprite;
     shipSprite.setTexture(shipTexture);
 
@@ -215,8 +216,40 @@ int main()
     shipSprite.setPosition(shipX, shipY);
 
     sf::FloatRect shipBounds = shipSprite.getGlobalBounds();
-    float birdDeckX = shipBounds.left + shipBounds.width * 0.45f;
-    float birdDeckY = shipBounds.top + shipBounds.height * 0.25f;
+
+    // -------------------------------------------------------------------------------
+    // slingshot setup (back stick + front piece)
+    //  - base sits on the ship
+    //  - bird will spawn aligned with this
+
+    sf::Sprite slingBackSprite;
+    sf::Sprite slingFrontSprite;
+
+    slingBackSprite.setTexture(slingBackTexture);
+    slingFrontSprite.setTexture(slingFrontTexture);
+
+    float slingDesiredHeight = shipBounds.height * 0.45f;
+    float slingScale = slingDesiredHeight / (float)slingBackTexture.getSize().y;
+
+    slingBackSprite.setScale(slingScale, slingScale);
+    slingFrontSprite.setScale(slingScale, slingScale);
+
+    sf::FloatRect backBounds = slingBackSprite.getLocalBounds();
+    sf::FloatRect frontBounds = slingFrontSprite.getLocalBounds();
+
+    slingBackSprite.setOrigin(backBounds.width * 0.5f, backBounds.height);
+    slingFrontSprite.setOrigin(frontBounds.width * 0.5f, frontBounds.height);
+
+    // place base on the deck, roughly in the middle of the ship
+    float slingX = shipBounds.left + shipBounds.width * 0.20f;
+    float slingY = shipBounds.top + shipBounds.height * 0.45f;
+
+    slingBackSprite.setPosition(slingX, slingY);
+    slingFrontSprite.setPosition(slingX, slingY);
+
+    // bird "rest" position – slightly above sling base so it sits in the fork
+    float birdDeckX = slingX - 25.0;
+    float birdDeckY = slingY - 170.0;
 
     // =====================================================
     // WAVES SETUP
@@ -246,17 +279,14 @@ int main()
     float WAVES_SPEED = 300.0f;
 
     // =====================================================
-    // PIGS + OBSTACLES
+    // pigs n obstacles
     // =====================================================
     vector<Pig *> pigs;
     vector<Obstacle *> obstacles;
 
     pigs.push_back(new WeakPig(weakPigTexture, sf::Vector2f(1200.0f, 650.0f)));
     pigs.push_back(new StrongPig(strongPigTexture, sf::Vector2f(1500.0f, 650.0f)));
-
-    obstacles.push_back(new IceObstacle(iceTexture, sf::Vector2f(950.0f, 700.0f)));
-    obstacles.push_back(new WoodObstacle(woodTexture, sf::Vector2f(1100.0f, 700.0f)));
-    obstacles.push_back(new StoneObstacle(stoneTexture, sf::Vector2f(1350.0f, 700.0f)));
+    // later: pigs.push_back(new KingPig(kingPigTexture, sf::Vector2f(...)));
 
     int i = 0;
     for (i = 0; i < (int)pigs.size(); i++)
@@ -264,13 +294,17 @@ int main()
         pigs[i]->getSprite().setScale(0.5f, 0.5f);
     }
 
+    obstacles.push_back(new IceObstacle(iceTexture, sf::Vector2f(950.0f, 700.0f)));
+    obstacles.push_back(new WoodObstacle(woodTexture, sf::Vector2f(1100.0f, 700.0f)));
+    obstacles.push_back(new StoneObstacle(stoneTexture, sf::Vector2f(1350.0f, 700.0f)));
+
     for (i = 0; i < (int)obstacles.size(); i++)
     {
         obstacles[i]->getSprite().setScale(0.7f, 0.7f);
     }
 
     // =====================================================
-    // POWER-UP (CRATE)
+    // crate
     // =====================================================
     sf::Sprite powerUpSprite;
     bool powerUpActive = true;
@@ -279,7 +313,7 @@ int main()
     powerUpSprite.setPosition(1300.0f, 450.0f);
 
     // =====================================================
-    // BIRDS
+    // birds
     // =====================================================
     float desiredBirdHeight = shipBounds.height * 0.25f;
     float birdScale = desiredBirdHeight / (float)redBirdTexture.getSize().y;
@@ -312,7 +346,6 @@ int main()
     // =====================================================
     while (window.isOpen())
     {
-        // ------------------- EVENTS -----------------------
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -321,7 +354,6 @@ int main()
                 window.close();
             }
 
-            // Handle reset button first, even if gameOver is true
             if (event.type == sf::Event::MouseButtonPressed &&
                 event.mouseButton.button == sf::Mouse::Left)
             {
@@ -330,7 +362,6 @@ int main()
 
                 if (resetButton.getGlobalBounds().contains(mousePos))
                 {
-                    // delete existing pigs and obstacles
                     for (i = 0; i < (int)pigs.size(); i++)
                     {
                         delete pigs[i];
@@ -343,7 +374,6 @@ int main()
                     }
                     obstacles.clear();
 
-                    // recreate pigs
                     pigs.push_back(new WeakPig(weakPigTexture, sf::Vector2f(1200.0f, 650.0f)));
                     pigs.push_back(new StrongPig(strongPigTexture, sf::Vector2f(1500.0f, 650.0f)));
 
@@ -352,7 +382,6 @@ int main()
                         pigs[i]->getSprite().setScale(0.5f, 0.5f);
                     }
 
-                    // recreate obstacles
                     obstacles.push_back(new IceObstacle(iceTexture, sf::Vector2f(950.0f, 700.0f)));
                     obstacles.push_back(new WoodObstacle(woodTexture, sf::Vector2f(1100.0f, 700.0f)));
                     obstacles.push_back(new StoneObstacle(stoneTexture, sf::Vector2f(1350.0f, 700.0f)));
@@ -362,12 +391,10 @@ int main()
                         obstacles[i]->getSprite().setScale(0.7f, 0.7f);
                     }
 
-                    // reset crate
                     powerUpActive = true;
                     powerUpSprite.setScale(0.23f, 0.23f);
                     powerUpSprite.setPosition(1300.0f, 450.0f);
 
-                    // reset bird
                     if (currentBird != 0)
                     {
                         delete currentBird;
@@ -379,15 +406,12 @@ int main()
                     birdVelocity.x = 0.0f;
                     birdVelocity.y = 0.0f;
 
-                    // reset counts
                     redBirdCount = 3;
                     blueBirdCount = 3;
                     yellowBirdCount = 3;
 
-                    // reset background scroll
                     bgOffsetX = 0.0f;
 
-                    // reset game state
                     gameOver = false;
                     scrolling = true;
                     if (music.getStatus() != sf::Music::Playing)
@@ -554,7 +578,6 @@ int main()
 
         if (gameOver == false)
         {
-            // ------------------ UPDATE ------------------------
             if (scrolling == true)
             {
                 bgOffsetX = bgOffsetX + BG_SPEED * dt;
@@ -601,7 +624,6 @@ int main()
                 {
                     birdVelocity.y = birdVelocity.y + GRAVITY * dt;
 
-                    // *** key change: let the bird class handle motion so BlueBird gets dt ***
                     currentBird->update(dt, birdVelocity);
 
                     const sf::Sprite & birdSprite = currentBird->getSprite();
@@ -735,7 +757,6 @@ int main()
             }
         }
 
-        // ------------------ DRAW --------------------------
         window.clear(sf::Color::Black);
 
         window.draw(bgSprite);
@@ -758,12 +779,17 @@ int main()
             window.draw(powerUpSprite);
         }
 
+        // slingshot layering:
+        // back stick (bottom), bird (middle), front piece (top)
+        window.draw(slingBackSprite);
+
         if (currentBird != 0)
         {
             currentBird->draw(window);
         }
 
-        // HUD icons + counts
+        window.draw(slingFrontSprite);
+
         window.draw(hudRedSprite);
         window.draw(hudBlueSprite);
         window.draw(hudYellowSprite);

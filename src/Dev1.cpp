@@ -15,25 +15,35 @@ Pig::Pig(const sf::Texture& texture, sf::Vector2f position, int hp, string t)
     alive = true;
 }
 
-Pig::~Pig()
-{
-}
-
 void Pig::update(float dt)
 {
-    // For now pigs do not move.
-    // If you want movement later, add here.
+    if (alive == false)
+    {
+        sprite.setColor(sf::Color(255, 255, 255, 0));
+    }
 }
 
-void Pig::draw(sf::RenderWindow& window)
+sf::Sprite& Pig::getSprite()
 {
-    if (alive)
-        window.draw(sprite);
+    return sprite;
+}
+
+const sf::Sprite& Pig::getSprite() const
+{
+    return sprite;
+}
+
+bool Pig::isAlive() const
+{
+    return alive;
 }
 
 void Pig::takeDamage(int amount)
 {
-    if (!alive) return;
+    if (alive == false)
+    {
+        return;
+    }
 
     currentHP = currentHP - amount;
 
@@ -41,128 +51,164 @@ void Pig::takeDamage(int amount)
     {
         currentHP = 0;
         alive = false;
+        sprite.setColor(sf::Color(255, 255, 255, 0));
     }
 }
 
-bool Pig::isAlive() const { return alive; }
-int Pig::getHP() const { return currentHP; }
-int Pig::getMaxHP() const { return maxHP; }
+int Pig::getHP() const
+{
+    return currentHP;
+}
 
-sf::Sprite& Pig::getSprite() { return sprite; }
-sf::FloatRect Pig::getBounds() const { return sprite.getGlobalBounds(); }
+string Pig::getType() const
+{
+    return type;
+}
 
-
-// ======================================================
-//          WEAK + STRONG PIGS (DERIVED)
-// ======================================================
-
-WeakPig::WeakPig(const sf::Texture& texture, sf::Vector2f pos)
-    : Pig(texture, pos, 8, "weak")   // example HP: 8
+// weak pig ~ 1 good hit
+WeakPig::WeakPig(const sf::Texture& texture, sf::Vector2f position)
+    : Pig(texture, position, 4, "weak")
 {
 }
 
-StrongPig::StrongPig(const sf::Texture& texture, sf::Vector2f pos)
-    : Pig(texture, pos, 15, "strong") // example HP: 15
+// strong pig ~ 2–3 good hits
+StrongPig::StrongPig(const sf::Texture& texture, sf::Vector2f position)
+    : Pig(texture, position, 10, "strong")
 {
 }
 
+// king pig ~ 5–6 good hits
+KingPig::KingPig(const sf::Texture& texture, sf::Vector2f position)
+    : Pig(texture, position, 22, "king")
+{
+}
 
 // ======================================================
-//                OBSTACLE BASE CLASS
+//                 OBSTACLE BASE CLASS
 // ======================================================
 
-Obstacle::Obstacle(const sf::Texture& texture, sf::Vector2f pos, string t)
+Obstacle::Obstacle(const sf::Texture& texture,
+                   sf::Vector2f position,
+                   string m)
 {
     sprite.setTexture(texture);
-    sprite.setPosition(pos);
+    sprite.setPosition(position);
 
     destroyed = false;
-    type = t;
-}
-
-Obstacle::~Obstacle()
-{
+    material = m;
 }
 
 void Obstacle::update(float dt)
 {
-    // Static for now. Add physics later if needed.
+    if (destroyed == true)
+    {
+        sprite.setColor(sf::Color(255, 255, 255, 0));
+    }
 }
 
-void Obstacle::draw(sf::RenderWindow& window)
+sf::Sprite& Obstacle::getSprite()
 {
-    if (!destroyed)
-        window.draw(sprite);
+    return sprite;
 }
 
-bool Obstacle::isDestroyed() const { return destroyed; }
-sf::Sprite& Obstacle::getSprite() { return sprite; }
-sf::FloatRect Obstacle::getBounds() const { return sprite.getGlobalBounds(); }
-string Obstacle::getType() const { return type; }
+const sf::Sprite& Obstacle::getSprite() const
+{
+    return sprite;
+}
 
+bool Obstacle::isDestroyed() const
+{
+    return destroyed;
+}
+
+string Obstacle::getMaterial() const
+{
+    return material;
+}
 
 // ======================================================
-//              OBSTACLE TYPES
+//          OBSTACLE DERIVED CLASSES: onHit
 // ======================================================
 
-IceObstacle::IceObstacle(const sf::Texture& tex, sf::Vector2f pos)
-    : Obstacle(tex, pos, "ice")
+static void slowBirdVelocity(sf::Vector2f& v, float factor)
+{
+    v.x = v.x * factor;
+    v.y = v.y * factor;
+}
+
+IceObstacle::IceObstacle(const sf::Texture& texture, sf::Vector2f position)
+    : Obstacle(texture, position, "ice")
 {
 }
 
-void IceObstacle::onHit(sf::Vector2f& velocity)
+void IceObstacle::onHit(sf::Vector2f& birdVelocity)
 {
-    // small slow: keep 80% of speed
-    velocity.x = velocity.x * 0.8f;
-    velocity.y = velocity.y * 0.8f;
-    destroyed = true;   // breaks in one hit
+    if (destroyed == true)
+    {
+        return;
+    }
+
+    slowBirdVelocity(birdVelocity, 0.85);
+
+    destroyed = true;
+    sprite.setColor(sf::Color(255, 255, 255, 0));
 }
 
-WoodObstacle::WoodObstacle(const sf::Texture& tex, sf::Vector2f pos)
-    : Obstacle(tex, pos, "wood")
-{
-}
-
-void WoodObstacle::onHit(sf::Vector2f& velocity)
-{
-    // medium slow: keep 50% of speed
-    velocity.x = velocity.x * 0.5f;
-    velocity.y = velocity.y * 0.5f;
-    destroyed = true;   // breaks in one hit
-}
-
-StoneObstacle::StoneObstacle(const sf::Texture& tex, sf::Vector2f pos)
-    : Obstacle(tex, pos, "stone")
+WoodObstacle::WoodObstacle(const sf::Texture& texture, sf::Vector2f position)
+    : Obstacle(texture, position, "wood")
 {
 }
 
-void StoneObstacle::onHit(sf::Vector2f& velocity)
+void WoodObstacle::onHit(sf::Vector2f& birdVelocity)
 {
-    // strong slow: keep 20% of speed
-    velocity.x = velocity.x * 0.2f;
-    velocity.y = velocity.y * 0.2f;
-    destroyed = true;   // breaks in one hit
+    if (destroyed == true)
+    {
+        return;
+    }
+
+    slowBirdVelocity(birdVelocity, 0.70);
+
+    destroyed = true;
+    sprite.setColor(sf::Color(255, 255, 255, 0));
 }
 
+StoneObstacle::StoneObstacle(const sf::Texture& texture, sf::Vector2f position)
+    : Obstacle(texture, position, "metal")
+{
+}
+
+void StoneObstacle::onHit(sf::Vector2f& birdVelocity)
+{
+    if (destroyed == true)
+    {
+        return;
+    }
+
+    slowBirdVelocity(birdVelocity, 0.45);
+
+    destroyed = true;
+    sprite.setColor(sf::Color(255, 255, 255, 0));
+}
 
 // ======================================================
-//                COLLISION HELPERS
+//                 COLLISION HELPERS
 // ======================================================
 
-bool checkCollision(const sf::Sprite& a, const sf::Sprite& b)
+static bool checkCollision(const sf::Sprite& a, const sf::Sprite& b)
 {
     sf::FloatRect A = a.getGlobalBounds();
     sf::FloatRect B = b.getGlobalBounds();
     return A.intersects(B);
 }
 
-// Bird ↔ obstacle
 bool handleBirdObstacleCollision(const sf::Sprite& bird,
                                  sf::Vector2f& birdVelocity,
                                  Obstacle& obs)
 {
-    if (obs.isDestroyed())
+    if (obs.isDestroyed() == true)
+    {
         return false;
+    }
 
     if (checkCollision(bird, obs.getSprite()))
     {
@@ -178,22 +224,28 @@ int computeDamageFromVelocity(const sf::Vector2f& velocity)
     float speed = std::sqrt(velocity.x * velocity.x +
                             velocity.y * velocity.y);
 
-    // scale factor: tune this
-    int damage = (int)(speed / 200.0f);
+    int damage = (int)(speed / 300.0);
 
     if (damage < 1)
+    {
         damage = 1;
+    }
+    if (damage > 10)
+    {
+        damage = 10;
+    }
 
     return damage;
 }
 
-// Bird ↔ pig
 bool handleBirdPigCollision(const sf::Sprite& bird,
                             const sf::Vector2f& birdVelocity,
                             Pig& pig)
 {
-    if (!pig.isAlive())
+    if (pig.isAlive() == false)
+    {
         return false;
+    }
 
     if (checkCollision(bird, pig.getSprite()))
     {
