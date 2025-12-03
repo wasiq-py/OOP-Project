@@ -7,9 +7,7 @@
 #include <string>
 using namespace std;
 
-// ======================================================
-//                 PIG BASE CLASS
-// ======================================================
+// pig base class -------------------------------------------
 
 class Pig
 {
@@ -36,37 +34,35 @@ public:
     string getType() const;
 };
 
-// weak pig = low HP (1 good hit)
+// weak pig 
 class WeakPig : public Pig
 {
 public:
     WeakPig(const sf::Texture& texture, sf::Vector2f position);
 };
 
-// strong pig = higher HP (2–3 good hits)
+// strong pig
 class StrongPig : public Pig
 {
 public:
     StrongPig(const sf::Texture& texture, sf::Vector2f position);
 };
 
-// king pig = high HP (5–6 good hits), used in last level
+// king pig 
 class KingPig : public Pig
 {
 public:
     KingPig(const sf::Texture& texture, sf::Vector2f position);
 };
 
-// ======================================================
-//                 OBSTACLE BASE CLASS
-// ======================================================
+// obstacle base class --------------------------------------------------
 
 class Obstacle
 {
 protected:
     sf::Sprite sprite;
     bool destroyed;
-    string material;   // "ice", "wood", "metal"
+    string material;   // ice, wood, metal
 
 public:
     Obstacle(const sf::Texture& texture, sf::Vector2f position, string m);
@@ -82,7 +78,8 @@ public:
     virtual void onHit(sf::Vector2f& birdVelocity) = 0;
 };
 
-// ice obstacle: weakest
+// ice obs -----------------------------------------
+
 class IceObstacle : public Obstacle
 {
 public:
@@ -91,7 +88,7 @@ public:
     virtual void onHit(sf::Vector2f& birdVelocity);
 };
 
-// wood obstacle: medium
+// wood obs -----------------------------------------
 class WoodObstacle : public Obstacle
 {
 public:
@@ -100,7 +97,7 @@ public:
     virtual void onHit(sf::Vector2f& birdVelocity);
 };
 
-// stone obstacle (metal): strongest
+// metal obs -----------------------------------------
 class StoneObstacle : public Obstacle
 {
 public:
@@ -109,9 +106,7 @@ public:
     virtual void onHit(sf::Vector2f& birdVelocity);
 };
 
-// ======================================================
-//                 COLLISION HELPERS
-// ======================================================
+// colliion helper funcs
 
 bool handleBirdObstacleCollision(const sf::Sprite& bird,
                                  sf::Vector2f& birdVelocity,

@@ -1,10 +1,8 @@
 #include "Dev1.hpp"
 
-// ======================================================
-//                 PIG BASE CLASS
-// ======================================================
+// pig base class -----------------------------
 
-Pig::Pig(const sf::Texture& texture, sf::Vector2f position, int hp, string t)
+Pig :: Pig(const sf::Texture& texture, sf::Vector2f position, int hp, string t)
 {
     sprite.setTexture(texture);
     sprite.setPosition(position);
@@ -65,27 +63,25 @@ string Pig::getType() const
     return type;
 }
 
-// weak pig ~ 1 good hit
+// weak pig ~
 WeakPig::WeakPig(const sf::Texture& texture, sf::Vector2f position)
     : Pig(texture, position, 4, "weak")
 {
 }
 
-// strong pig ~ 2–3 good hits
+// strong pig 
 StrongPig::StrongPig(const sf::Texture& texture, sf::Vector2f position)
-    : Pig(texture, position, 10, "strong")
+    : Pig(texture, position, 60, "strong")
 {
 }
 
-// king pig ~ 5–6 good hits
+// king pig 
 KingPig::KingPig(const sf::Texture& texture, sf::Vector2f position)
-    : Pig(texture, position, 22, "king")
+    : Pig(texture, position, 100, "king")
 {
 }
 
-// ======================================================
-//                 OBSTACLE BASE CLASS
-// ======================================================
+// obstacle base clas ------------------------------------
 
 Obstacle::Obstacle(const sf::Texture& texture,
                    sf::Vector2f position,
@@ -126,9 +122,8 @@ string Obstacle::getMaterial() const
     return material;
 }
 
-// ======================================================
-//          OBSTACLE DERIVED CLASSES: onHit
-// ======================================================
+// obstacle child class onhit  -----------------------------
+
 
 static void slowBirdVelocity(sf::Vector2f& v, float factor)
 {
@@ -136,10 +131,8 @@ static void slowBirdVelocity(sf::Vector2f& v, float factor)
     v.y = v.y * factor;
 }
 
-IceObstacle::IceObstacle(const sf::Texture& texture, sf::Vector2f position)
-    : Obstacle(texture, position, "ice")
-{
-}
+IceObstacle::IceObstacle(const sf::Texture& texture, sf::Vector2f position) : Obstacle(texture, position, "ice")
+{}
 
 void IceObstacle::onHit(sf::Vector2f& birdVelocity)
 {
@@ -154,10 +147,8 @@ void IceObstacle::onHit(sf::Vector2f& birdVelocity)
     sprite.setColor(sf::Color(255, 255, 255, 0));
 }
 
-WoodObstacle::WoodObstacle(const sf::Texture& texture, sf::Vector2f position)
-    : Obstacle(texture, position, "wood")
-{
-}
+WoodObstacle::WoodObstacle(const sf::Texture& texture, sf::Vector2f position) : Obstacle(texture, position, "wood")
+{}
 
 void WoodObstacle::onHit(sf::Vector2f& birdVelocity)
 {
@@ -172,10 +163,8 @@ void WoodObstacle::onHit(sf::Vector2f& birdVelocity)
     sprite.setColor(sf::Color(255, 255, 255, 0));
 }
 
-StoneObstacle::StoneObstacle(const sf::Texture& texture, sf::Vector2f position)
-    : Obstacle(texture, position, "metal")
-{
-}
+StoneObstacle::StoneObstacle(const sf::Texture& texture, sf::Vector2f position) : Obstacle(texture, position, "metal")
+{}
 
 void StoneObstacle::onHit(sf::Vector2f& birdVelocity)
 {
@@ -190,9 +179,7 @@ void StoneObstacle::onHit(sf::Vector2f& birdVelocity)
     sprite.setColor(sf::Color(255, 255, 255, 0));
 }
 
-// ======================================================
-//                 COLLISION HELPERS
-// ======================================================
+// collision helper funcs -------------------------------------------------
 
 static bool checkCollision(const sf::Sprite& a, const sf::Sprite& b)
 {
@@ -238,9 +225,7 @@ int computeDamageFromVelocity(const sf::Vector2f& velocity)
     return damage;
 }
 
-bool handleBirdPigCollision(const sf::Sprite& bird,
-                            const sf::Vector2f& birdVelocity,
-                            Pig& pig)
+bool handleBirdPigCollision(const sf::Sprite& bird, const sf::Vector2f& birdVelocity,   Pig& pig)
 {
     if (pig.isAlive() == false)
     {

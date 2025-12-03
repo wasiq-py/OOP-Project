@@ -20,9 +20,7 @@ void runGraphicsDemo()
     );
     window.setFramerateLimit(60);
 
-    // =====================================================
-    // Load Textures
-    // =====================================================
+// load textures 
 
     bool assetsOk = true;
 
@@ -73,7 +71,7 @@ void runGraphicsDemo()
         cout << "Some textures failed to load. Continuing anyway with empty textures..." << endl;
     }
 
-    // Smooth textures (safe even if they are “empty”)
+    // Smooth textures 
     bgTexture.setSmooth(true);
     shipTexture.setSmooth(true);
     wavesTexture.setSmooth(true);
@@ -81,9 +79,7 @@ void runGraphicsDemo()
     blueBirdTexture.setSmooth(true);
     yellowBirdTexture.setSmooth(true);
 
-    // =====================================================
-    // Load Background Music
-    // =====================================================
+// bg music ----------------------------------------------
     sf::Music music;
     if (!music.openFromFile(AUDIO + "Angry Birds Theme Song.mp3"))
     {
@@ -96,9 +92,7 @@ void runGraphicsDemo()
         music.play();
     }
 
-    // =====================================================
-    // Background Scroll Setup
-    // =====================================================
+// bg scroll 
 
     sf::Sprite bgSprite(bgTexture);
     sf::IntRect bgRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -108,9 +102,7 @@ void runGraphicsDemo()
     const int BG_MAX_OFFSET = static_cast<int>(bgTexture.getSize().x) - WINDOW_WIDTH;
     float bgOffsetX = 0.0f;
 
-    // =====================================================
-    // Ship Setup
-    // =====================================================
+//ship sprite 
 
     sf::Sprite shipSprite(shipTexture);
 
@@ -126,9 +118,7 @@ void runGraphicsDemo()
     float birdDeckX = shipBounds.left + shipBounds.width  * 0.45f;
     float birdDeckY = shipBounds.top  + shipBounds.height * 0.25f;
 
-    // =====================================================
-    // Waves Setup
-    // =====================================================
+//waves sprite
 
     sf::Sprite waves1(wavesTexture);
     sf::Sprite waves2(wavesTexture);
@@ -152,9 +142,7 @@ void runGraphicsDemo()
 
     const float WAVES_SPEED = 300.0f;
 
-    // =====================================================
-    // Bird Sprites
-    // =====================================================
+//bird sprite
 
     sf::Sprite redBirdSprite(redBirdTexture);
     sf::Sprite blueBirdSprite(blueBirdTexture);
@@ -179,9 +167,7 @@ void runGraphicsDemo()
     sf::Clock clock;
     bool scrolling = true;
 
-    // =====================================================
-    // Main Loop
-    // =====================================================
+// main loop
 
     while (window.isOpen())
     {

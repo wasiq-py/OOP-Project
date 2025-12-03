@@ -4,9 +4,7 @@
 #include <SFML/Graphics.hpp>
 using namespace std;
 
-// =====================
-// Bird base class
-// =====================
+// bird parent class -------------------------------------
 class Bird
 {
 protected:
@@ -35,19 +33,14 @@ public:
     virtual void specialAbility(sf::Vector2f & velocity);
 };
 
-// =====================
-// RedBird class
-// =====================
+// red bird class and implementation ----------------------
 class RedBird : public Bird
 {
 public:
     RedBird(sf::Texture & tex, sf::Vector2f pos);
 };
 
-// =====================
-// BlueBird class
-//  - splits into three, with spread trajectories
-// =====================
+// blue bird class and implementation ----------------------
 class BlueBird : public Bird
 {
 private:
@@ -66,10 +59,8 @@ public:
     virtual void specialAbility(sf::Vector2f & velocity);
 };
 
-// =====================
-// YellowBird class
-//  - one-time speed boost
-// =====================
+// yellow bird class and implementation ----------------------
+
 class YellowBird : public Bird
 {
 private:
@@ -81,9 +72,7 @@ public:
     virtual void specialAbility(sf::Vector2f & velocity);
 };
 
-// =========================
-// function to create birds
-// =========================
+// funct to create birds
 Bird * createBird(int type,
                   sf::Texture & redTex,
                   sf::Texture & blueTex,

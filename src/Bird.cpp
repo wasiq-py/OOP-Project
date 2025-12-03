@@ -1,9 +1,7 @@
 #include "Bird.hpp"
 #include <cmath>
 
-// =====================
-// Bird base class
-// =====================
+// bird base class ---------------------------------------------------------------
 Bird :: Bird(sf::Texture & texture, sf::Vector2f deckPos)
 {
     sprite.setTexture(texture);
@@ -66,17 +64,14 @@ void Bird :: specialAbility(sf::Vector2f & velocity)
     // base bird has no special ability
 }
 
-// =====================
-// RedBird
-// =====================
+//red bird -----------------------------------------------
+
 RedBird :: RedBird(sf::Texture & tex, sf::Vector2f pos)
     : Bird(tex, pos)
 {
 }
 
-// =====================
-// BlueBird
-// =====================
+//blue  bird -----------------------------------------------
 BlueBird :: BlueBird(sf::Texture & tex, sf::Vector2f pos)
     : Bird(tex, pos)
 {
@@ -134,6 +129,7 @@ void BlueBird :: draw(sf::RenderWindow & window)
     }
 }
 
+
 void BlueBird :: update(float dt, sf::Vector2f & velocity)
 {
     Bird :: update(dt, velocity);
@@ -183,11 +179,10 @@ void BlueBird :: specialAbility(sf::Vector2f & velocity)
     velocity.y = velocity.y * 0.7;
 }
 
-// =====================
-// YellowBird
-// =====================
-YellowBird :: YellowBird(sf::Texture & tex, sf::Vector2f pos)
-    : Bird(tex, pos)
+//yellow bird -----------------------------------------------
+
+
+YellowBird :: YellowBird(sf::Texture & tex, sf::Vector2f pos) : Bird(tex, pos)
 {
     boostUsed = false;
 }
@@ -209,16 +204,20 @@ void YellowBird :: specialAbility(sf::Vector2f & velocity)
     velocity.y = velocity.y * 1.6;
 }
 
-// =========================
-// factory
-// =========================
-Bird * createBird(int type,
-                  sf::Texture & redTex,
-                  sf::Texture & blueTex,
-                  sf::Texture & yellowTex,
-                  float x, float y, float scale)
+
+
+
+
+
+
+
+
+
+
+
+Bird * createBird(int type, sf::Texture & redTex, sf::Texture & blueTex, sf::Texture & yellowTex, float x, float y, float scale)
 {
-    Bird * ptr = 0;
+    Bird * ptr = nullptr;
 
     if (type == 1)
     {
