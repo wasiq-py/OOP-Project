@@ -20,7 +20,7 @@ void runGraphicsDemo()
     );
     window.setFramerateLimit(60);
 
-// load textures 
+// error hadling textures 
 
     bool assetsOk = true;
 

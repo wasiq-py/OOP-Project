@@ -63,7 +63,7 @@ string Pig::getType() const
     return type;
 }
 
-// weak pig ~
+// weak pig 
 WeakPig::WeakPig(const sf::Texture& texture, sf::Vector2f position)
     : Pig(texture, position, 4, "weak")
 {

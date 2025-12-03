@@ -11,23 +11,17 @@
 
 using namespace std;
 
-// --------------------------------------------------------------------
-// Folder paths
-// --------------------------------------------------------------------
+// folder paths 
 const string TEXTURES = "assets/textures/";
 const string AUDIO    = "assets/audio/";
 
-// --------------------------------------------------------------------
-// Simple AABB collision helper (for power-up crate etc.)
-// --------------------------------------------------------------------
+// collision helper
 bool checkSpriteCollision(const sf::Sprite & a, const sf::Sprite & b)
 {
     return a.getGlobalBounds().intersects(b.getGlobalBounds());
 }
 
-// --------------------------------------------------------------------
-// Texture load helper
-// --------------------------------------------------------------------
+// texture load helper
 bool loadTexture(sf::Texture & t, const string & file)
 {
     if (t.loadFromFile(TEXTURES + file) == false)
@@ -40,9 +34,9 @@ bool loadTexture(sf::Texture & t, const string & file)
 }
 
 // --------------------------------------------------------------------
-// Helpers to clear and build levels (pigs + obstacles layouts)
-// These are taken from main1.cpp and adapted to your current code.
-// --------------------------------------------------------------------
+// helpers to clear and build levels (pigs + obstacles layouts)
+// these are taken from main1.cpp and adapted to your current code
+
 void clearLevelVectors(vector<Pig*> & pigs,
                        vector<Obstacle*> & obstacles)
 {
@@ -60,8 +54,8 @@ void clearLevelVectors(vector<Pig*> & pigs,
     obstacles.clear();
 }
 
-// Build the pigs + obstacles layout for one level (1..5)
-// Also positions the power-up crate for that level.
+// build the pigs + obstacles layout for one level (
+// also positions the power-up crate for that level.
 void buildLevel(int level,
                 vector<Pig*> & pigs,
                 vector<Obstacle*> & obstacles,
@@ -76,13 +70,13 @@ void buildLevel(int level,
 {
     clearLevelVectors(pigs, obstacles);
 
-    // Baseline and "ground" used for layouts (from your layout.pdf)
+    // baseline and ground used for layouts 
     float BASELINE_X = WINDOW_WIDTH * 0.7f;
     float GROUND_Y   = WINDOW_HEIGHT * 0.65f;
 
     powerUpActive = true;
 
-    // --------------- LEVEL 1 ---------------
+    // --------------- lvl1
     if (level == 1)
     {
         float xRight = BASELINE_X - 80.0f;
@@ -108,7 +102,7 @@ void buildLevel(int level,
         crateSprite.setPosition(xRight, GROUND_Y - 260.0f);
     }
 
-    // --------------- LEVEL 2 ---------------
+    // --------------- lvl 2
     else if (level == 2)
     {
         float columnX = BASELINE_X - 80.0f;
@@ -146,7 +140,7 @@ void buildLevel(int level,
         crateSprite.setPosition(columnX + 200.0f, GROUND_Y - 220.0f);
     }
 
-    // --------------- LEVEL 3 ---------------
+    // --------------- lvl 3
     else if (level == 3)
     {
         float baseX = BASELINE_X - 200.0f;
@@ -196,7 +190,7 @@ void buildLevel(int level,
         crateSprite.setPosition(towerX + 60.0f, GROUND_Y - 320.0f);
     }
 
-    // --------------- LEVEL 4 ---------------
+    // --------------- lvl 4
     else if (level == 4)
     {
         float houseCenterX = BASELINE_X - 120.0f;
@@ -210,7 +204,7 @@ void buildLevel(int level,
             new WoodObstacle(woodTexture,
                              sf::Vector2f(houseCenterX + 80.0f, GROUND_Y - 40.0f)));
 
-        // inner stone "walls"
+        // inner stone  walls
         obstacles.push_back(
             new StoneObstacle(stoneTexture,
                               sf::Vector2f(houseCenterX - 40.0f, GROUND_Y - 150.0f)));
@@ -228,7 +222,7 @@ void buildLevel(int level,
             new IceObstacle(iceTexture,
                             sf::Vector2f(houseCenterX + 70.0f, GROUND_Y - 210.0f)));
 
-        // strong pig inside "house"
+        // strong pig inside 
         pigs.push_back(
             new StrongPig(strongPigTexture,
                           sf::Vector2f(houseCenterX, GROUND_Y - 130.0f)));
@@ -242,10 +236,10 @@ void buildLevel(int level,
         crateSprite.setPosition(houseCenterX, GROUND_Y - 260.0f);
     }
 
-    // --------------- LEVEL 5 ---------------
+    // --------------- lvl 5
     else
     {
-        // Final "castle" + KING pig
+        // Final castle + king pig
         float leftWallX = BASELINE_X - 360.0f;
 
         // left vertical stone wall
@@ -271,7 +265,7 @@ void buildLevel(int level,
             new WoodObstacle(woodTexture,
                              sf::Vector2f(BASELINE_X - 190.0f, GROUND_Y - 110.0f)));
 
-        // inner ice "L" core
+        // inner ice 
         obstacles.push_back(
             new IceObstacle(iceTexture,
                             sf::Vector2f(BASELINE_X - 120.0f, GROUND_Y - 120.0f)));
@@ -284,7 +278,7 @@ void buildLevel(int level,
             new StoneObstacle(stoneTexture,
                               sf::Vector2f(BASELINE_X - 80.0f, GROUND_Y - 20.0f)));
 
-        // KING pig at top right (now using kingPigTexture / pig3.png)
+        // kingpig at top right 
         pigs.push_back(
             new KingPig(kingPigTexture,
                         sf::Vector2f(BASELINE_X - 20.0f, GROUND_Y - 260.0f)));
@@ -307,7 +301,7 @@ void buildLevel(int level,
         crateSprite.setPosition(BASELINE_X - 80.0f, GROUND_Y - 330.0f);
     }
 
-    // scale as in your old main
+
     // scale pigs smaller based on type
     int i = 0;
     for (i = 0; i < (int)pigs.size(); i++)
@@ -336,18 +330,14 @@ void buildLevel(int level,
 
 }
 
-// =====================
-// main
-// =====================
+//main ----------------------------------------------------------------------
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT),
-                            "Angry Chiriya");
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT),"Angry Chiriya");
     window.setFramerateLimit(60);
 
-    // =====================================================
     // load textures
-    // =====================================================
+    
     sf::Texture bgTexture;
     sf::Texture shipTexture;
     sf::Texture wavesTexture;
@@ -379,18 +369,14 @@ int main()
     if (loadTexture(woodTexture, "wood-block.png") == false) return 1;
     if (loadTexture(stoneTexture, "wood-block.png") == false) return 1;
 
-    if (loadTexture(crateTexture, "CrateBird.png") == false)
-    {
-        // power-up is optional, so no return
-    }
+    if (loadTexture(crateTexture, "CrateBird.png") == false){}
 
-    // =====================================================
     // hud + txt
-    // =====================================================
+
     sf::Font hudFont;
     if (hudFont.loadFromFile("assets/fonts/arial.ttf") == false)
     {
-        cout << "Warning: could not load assets/fonts/arial.ttf" << endl;
+        cout << "couldnt load" << endl;
     }
 
     sf::Text hudTextRed;
@@ -409,7 +395,7 @@ int main()
 
     if (hudFont.getInfo().family != "")
     {
-        // HUD number text
+        // hud number text
         hudTextRed.setFont(hudFont);
         hudTextBlue.setFont(hudFont);
         hudTextYellow.setFont(hudFont);
@@ -422,7 +408,7 @@ int main()
         hudTextBlue.setFillColor(sf::Color::White);
         hudTextYellow.setFillColor(sf::Color::White);
 
-        // HUD bird icons
+        // hud bird icons
         hudRedSprite.setTexture(redBirdTexture);
         hudBlueSprite.setTexture(blueBirdTexture);
         hudYellowSprite.setTexture(yellowBirdTexture);
@@ -479,13 +465,11 @@ int main()
         resetText.setPosition(WINDOW_WIDTH - 120.0f, 12.0f);
     }
 
-    // =====================================================
-    // bg music
-    // =====================================================
+    // bg music -------------------------------------------------------------
     sf::Music music;
     if (music.openFromFile(AUDIO + "Angry Birds Theme Song.mp3") == false)
     {
-        cout << "Warning: could not load " << AUDIO << "Angry Birds Theme Song.mp3" << endl;
+        cout << "couldnt load" << endl;
     }
     else
     {
@@ -493,16 +477,15 @@ int main()
         music.play();
     }
 
-    // =====================================================
-    // bg setup (5-island big image)
-    // =====================================================
+    // bg setup  ------------------------------------------------------------------
+    
     sf::Sprite bgSprite;
     bgSprite.setTexture(bgTexture);
 
     sf::IntRect bgRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     bgSprite.setTextureRect(bgRect);
 
-    int bgMaxOffset = (int)bgTexture.getSize().x - WINDOW_WIDTH;
+    int bgMaxOffset = bgTexture.getSize().x - WINDOW_WIDTH;
     if (bgMaxOffset < 0)
     {
         bgMaxOffset = 0;
@@ -523,7 +506,7 @@ int main()
     shipSprite.setTexture(shipTexture);
 
     float desiredShipHeight = WINDOW_HEIGHT * 0.3f;
-    float shipTexH = (float)(shipTexture.getSize().y == 0 ? 1 : shipTexture.getSize().y);
+    float shipTexH = (shipTexture.getSize().y == 0 ? 1 : shipTexture.getSize().y);
     float shipScale = desiredShipHeight / shipTexH;
     shipSprite.setScale(shipScale, shipScale);
 
@@ -541,8 +524,8 @@ int main()
     waves1.setTexture(wavesTexture);
     waves2.setTexture(wavesTexture);
 
-    float wavesWidth = (float)wavesTexture.getSize().x;
-    float wavesHeight = (float)wavesTexture.getSize().y;
+    float wavesWidth = wavesTexture.getSize().x;
+    float wavesHeight = wavesTexture.getSize().y;
 
     float wavesScaleX = 2.0f;
     float wavesScaleY = 1.5f;
@@ -560,7 +543,7 @@ int main()
 
     float WAVES_SPEED = 300.0f;
 
-    // pigs n obstacles (per-level using layouts) ---------------------------------------------
+    // pigs n obstacles ---------------------------------------------
     vector<Pig *> pigs;
     vector<Obstacle *> obstacles;
 
@@ -606,7 +589,7 @@ int main()
     // game loop    --------------------------------------------
     while (window.isOpen())
     {
-        // ------------------- EVENTS -----------------------
+        // ------------------- events
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -624,7 +607,7 @@ int main()
 
                 if (resetButton.getGlobalBounds().contains(mousePos))
                 {
-                    // ===== reset everything to level 1 =====
+                    // reset -----------------------------------------------------------
                     clearLevelVectors(pigs, obstacles);
 
                     currentLevel = 1;
@@ -740,13 +723,6 @@ int main()
                                                  yellowBirdTexture,
                                                  birdDeckX, birdDeckY, birdScale);
                     }
-                }
-
-                if (event.key.code == sf::Keyboard::Up &&
-                    currentBird != 0 &&
-                    currentBird->isLaunched() == false)
-                {
-                    currentBird->lift();
                 }
             }
 
